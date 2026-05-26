@@ -1,0 +1,1302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Happy Birthday — For You</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Dancing+Script:wght@600;700&family=Bebas+Neue&family=Montserrat:wght@100;200;300;400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ─── BMW M Design Tokens ─────────────────────────────────────────── */
+    :root {
+      --m-red:        #E4000F;
+      --m-violet:     #9B0062;
+      --m-blue:       #0066B2;
+      --m-red-glow:   rgba(228, 0, 15, 0.35);
+      --m-violet-glow:rgba(155, 0, 98, 0.3);
+      --m-blue-glow:  rgba(0, 102, 178, 0.35);
+
+      --bg-deep:      #050508;
+      --bg-dark:      #0A0A0F;
+      --bg-card:      #0E0E14;
+      --bg-card-alt:  #111118;
+
+      --surface-1:    #16161F;
+      --surface-2:    #1C1C27;
+
+      --text-primary: #F0EDE8;
+      --text-secondary: #A8A4A0;
+      --text-muted:   #5A5A66;
+
+      --gold:         #C8A96E;
+      --gold-light:   #E8D5A8;
+
+      --radius-sm:    4px;
+      --radius-md:    8px;
+      --radius-lg:    16px;
+
+      --font-display: 'Bebas Neue', sans-serif;
+      --font-heading: 'Playfair Display', serif;
+      --font-body:    'Cormorant Garamond', serif;
+      --font-ui:      'Montserrat', sans-serif;
+      --font-script:  'Dancing Script', cursive;
+
+      --transition:   cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* ─── Reset & Base ──────────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html {
+      scroll-behavior: smooth;
+      font-size: 16px;
+    }
+
+    body {
+      background: var(--bg-deep);
+      color: var(--text-primary);
+      font-family: var(--font-body);
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    ::selection {
+      background: var(--m-violet);
+      color: #fff;
+    }
+
+    /* ─── Scrollbar ─────────────────────────────────────────────────────── */
+    ::-webkit-scrollbar { width: 3px; }
+    ::-webkit-scrollbar-track { background: var(--bg-deep); }
+    ::-webkit-scrollbar-thumb {
+      background: linear-gradient(180deg, var(--m-red), var(--m-violet), var(--m-blue));
+      border-radius: 2px;
+    }
+
+    /* ─── M Stripe ──────────────────────────────────────────────────────── */
+    .m-stripe {
+      display: inline-flex;
+      gap: 2px;
+      align-items: center;
+    }
+    .m-stripe span {
+      display: block;
+      height: 3px;
+      border-radius: 1px;
+    }
+    .m-stripe span:nth-child(1) { width: 18px; background: var(--m-blue); }
+    .m-stripe span:nth-child(2) { width: 8px; background: var(--m-violet); }
+    .m-stripe span:nth-child(3) { width: 18px; background: var(--m-red); }
+
+    /* ─── Canvas (particles) ────────────────────────────────────────────── */
+    #particle-canvas {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ─── HERO ──────────────────────────────────────────────────────────── */
+    #hero {
+      position: relative;
+      min-height: 100svh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1.5rem;
+      overflow: hidden;
+      z-index: 1;
+    }
+
+    .hero-bg-gradient {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 20% 50%, rgba(0, 102, 178, 0.12) 0%, transparent 60%),
+        radial-gradient(ellipse 70% 50% at 80% 40%, rgba(228, 0, 15, 0.10) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 80% at 50% 80%, rgba(155, 0, 98, 0.08) 0%, transparent 60%);
+      z-index: 0;
+      animation: gradientPulse 8s ease-in-out infinite alternate;
+    }
+
+    @keyframes gradientPulse {
+      0%   { opacity: 0.7; transform: scale(1); }
+      100% { opacity: 1; transform: scale(1.05); }
+    }
+
+    .hero-top-label {
+      position: relative;
+      z-index: 2;
+      font-family: var(--font-ui);
+      font-size: 0.6rem;
+      font-weight: 300;
+      letter-spacing: 0.45em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 2.5rem;
+      opacity: 0;
+      transform: translateY(-20px);
+      animation: fadeSlideDown 1s var(--transition) 0.3s forwards;
+    }
+
+    .hero-name-wrapper {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero-name {
+      font-family: var(--font-display);
+      font-size: clamp(5rem, 20vw, 14rem);
+      line-height: 0.9;
+      letter-spacing: 0.02em;
+      background: linear-gradient(135deg,
+        var(--text-primary) 0%,
+        var(--gold-light) 30%,
+        var(--text-primary) 60%,
+        var(--gold) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      display: block;
+    }
+
+    .hero-name .char {
+      display: inline-block;
+      opacity: 0;
+      transform: translateY(60px) rotateX(-40deg);
+      animation: charReveal 0.8s var(--transition) forwards;
+    }
+
+    @keyframes charReveal {
+      to { opacity: 1; transform: translateY(0) rotateX(0); }
+    }
+
+    .hero-divider {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      margin: 1.5rem 0;
+      opacity: 0;
+      animation: fadeIn 1s var(--transition) 1.4s forwards;
+    }
+
+    .hero-divider-line {
+      flex: 1;
+      max-width: 80px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--text-muted));
+    }
+    .hero-divider-line:last-child {
+      background: linear-gradient(90deg, var(--text-muted), transparent);
+    }
+
+    .hero-birthday {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      opacity: 0;
+      animation: fadeSlideUp 1s var(--transition) 1.6s forwards;
+    }
+
+    .hero-birthday-main {
+      font-family: var(--font-heading);
+      font-size: clamp(1.1rem, 4vw, 2rem);
+      font-weight: 400;
+      font-style: italic;
+      color: var(--text-secondary);
+      letter-spacing: 0.06em;
+    }
+
+    .hero-birthday-year {
+      display: block;
+      font-family: var(--font-ui);
+      font-size: 0.65rem;
+      font-weight: 200;
+      letter-spacing: 0.5em;
+      color: var(--text-muted);
+      margin-top: 0.5rem;
+      text-transform: uppercase;
+    }
+
+    .hero-scroll-hint {
+      position: absolute;
+      bottom: 2.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      opacity: 0;
+      animation: fadeIn 1s var(--transition) 2.5s forwards;
+    }
+
+    .hero-scroll-hint span {
+      font-family: var(--font-ui);
+      font-size: 0.55rem;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .scroll-line {
+      width: 1px;
+      height: 40px;
+      background: linear-gradient(180deg, var(--m-red), var(--m-blue));
+      animation: scrollPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes scrollPulse {
+      0%, 100% { opacity: 0.3; transform: scaleY(0.7); }
+      50% { opacity: 1; transform: scaleY(1); }
+    }
+
+    /* ─── CARBON DIVIDER ────────────────────────────────────────────────── */
+    .carbon-divider {
+      position: relative;
+      height: 4px;
+      background:
+        repeating-linear-gradient(
+          45deg,
+          var(--surface-1) 0px,
+          var(--surface-1) 4px,
+          var(--surface-2) 4px,
+          var(--surface-2) 8px
+        );
+      overflow: hidden;
+    }
+    .carbon-divider::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg,
+        var(--m-blue) 0%,
+        var(--m-violet) 50%,
+        var(--m-red) 100%);
+      animation: mStripeSlide 3s linear infinite;
+    }
+    @keyframes mStripeSlide {
+      0%   { clip-path: inset(0 100% 0 0); }
+      40%  { clip-path: inset(0 0% 0 0); }
+      60%  { clip-path: inset(0 0% 0 0); }
+      100% { clip-path: inset(0 0 0 100%); }
+    }
+
+    /* ─── SECTION BASE ──────────────────────────────────────────────────── */
+    .section {
+      position: relative;
+      z-index: 1;
+      padding: clamp(4rem, 10vw, 8rem) clamp(1.5rem, 5vw, 5rem);
+    }
+
+    .section-label {
+      font-family: var(--font-ui);
+      font-size: 0.6rem;
+      font-weight: 300;
+      letter-spacing: 0.5em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .section-label::after {
+      content: '';
+      flex: 1;
+      max-width: 60px;
+      height: 1px;
+      background: var(--text-muted);
+      opacity: 0.4;
+    }
+
+    /* ─── COUNTER SECTION ───────────────────────────────────────────────── */
+    #counter-section {
+      background: var(--bg-dark);
+    }
+
+    .counter-inner {
+      max-width: 900px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .counter-heading {
+      font-family: var(--font-heading);
+      font-size: clamp(1.6rem, 5vw, 3rem);
+      font-weight: 400;
+      font-style: italic;
+      color: var(--text-secondary);
+      margin-bottom: 3rem;
+    }
+
+    .counter-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1px;
+      border: 1px solid var(--surface-2);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      max-width: 560px;
+      margin: 0 auto 3rem;
+    }
+
+    @media (min-width: 480px) {
+      .counter-grid { grid-template-columns: repeat(4, 1fr); }
+    }
+
+    .counter-unit {
+      background: var(--bg-card);
+      padding: 1.5rem 1rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.4rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .counter-unit::before {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--m-blue), var(--m-violet), var(--m-red));
+      transform: scaleX(0);
+      transition: transform 0.6s var(--transition);
+    }
+
+    .counter-unit:hover::before { transform: scaleX(1); }
+
+    .counter-number {
+      font-family: var(--font-display);
+      font-size: clamp(2.5rem, 8vw, 4rem);
+      line-height: 1;
+      background: linear-gradient(135deg, var(--text-primary), var(--gold));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .counter-label {
+      font-family: var(--font-ui);
+      font-size: 0.55rem;
+      font-weight: 300;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .counter-note {
+      font-family: var(--font-ui);
+      font-size: 0.65rem;
+      font-weight: 300;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      border: 1px dashed var(--surface-2);
+      border-radius: var(--radius-sm);
+      padding: 0.5rem 1rem;
+      display: inline-block;
+    }
+
+    /* ─── LETTER SECTION ────────────────────────────────────────────────── */
+    #letter-section {
+      background: var(--bg-deep);
+    }
+
+    .letter-outer {
+      max-width: 760px;
+      margin: 0 auto;
+    }
+
+    .letter-heading {
+      font-family: var(--font-heading);
+      font-size: clamp(1.8rem, 5vw, 3.2rem);
+      font-weight: 400;
+      color: var(--text-primary);
+      margin-bottom: 2.5rem;
+    }
+
+    .letter-card {
+      position: relative;
+      background: var(--bg-card);
+      border: 1px solid var(--surface-2);
+      border-radius: var(--radius-md);
+      padding: clamp(2rem, 6vw, 4rem);
+      overflow: hidden;
+    }
+
+    /* Carbon fiber texture on letter */
+    .letter-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        repeating-linear-gradient(
+          45deg,
+          transparent 0px,
+          transparent 2px,
+          rgba(255,255,255,0.012) 2px,
+          rgba(255,255,255,0.012) 4px
+        ),
+        repeating-linear-gradient(
+          -45deg,
+          transparent 0px,
+          transparent 2px,
+          rgba(255,255,255,0.012) 2px,
+          rgba(255,255,255,0.012) 4px
+        );
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .letter-card::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg,
+        var(--m-blue) 0%,
+        var(--m-violet) 50%,
+        var(--m-red) 100%);
+    }
+
+    .letter-content {
+      position: relative;
+      z-index: 1;
+    }
+
+    .letter-salutation {
+      font-family: var(--font-body);
+      font-size: clamp(1.1rem, 3vw, 1.4rem);
+      font-weight: 400;
+      color: var(--gold-light);
+      margin-bottom: 1.8rem;
+      font-style: italic;
+    }
+
+    .letter-body {
+      font-family: var(--font-body);
+      font-size: clamp(1rem, 2.5vw, 1.2rem);
+      font-weight: 300;
+      line-height: 1.9;
+      color: var(--text-secondary);
+      white-space: pre-line;
+    }
+
+    /* ── INSERT LETTER PLACEHOLDER ── */
+    .letter-placeholder {
+      font-family: var(--font-ui);
+      font-size: 0.75rem;
+      font-weight: 300;
+      letter-spacing: 0.05em;
+      color: var(--m-violet);
+      background: rgba(155, 0, 98, 0.08);
+      border: 1px dashed var(--m-violet);
+      border-radius: var(--radius-sm);
+      padding: 1.5rem 2rem;
+      text-align: center;
+      line-height: 1.8;
+    }
+
+    .letter-signature {
+      margin-top: 2.5rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--surface-2);
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+    }
+
+    .letter-signature-name {
+      font-family: var(--font-script);
+      font-size: clamp(2rem, 6vw, 3rem);
+      color: var(--gold-light);
+      line-height: 1.1;
+    }
+
+    .letter-signature-date {
+      font-family: var(--font-ui);
+      font-size: 0.6rem;
+      font-weight: 300;
+      letter-spacing: 0.4em;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+
+    /* ─── SURPRISE BUTTON SECTION ───────────────────────────────────────── */
+    #surprise-section {
+      background: var(--bg-dark);
+    }
+
+    .surprise-inner {
+      max-width: 600px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .surprise-heading {
+      font-family: var(--font-heading);
+      font-size: clamp(1.4rem, 4vw, 2.4rem);
+      font-weight: 400;
+      font-style: italic;
+      color: var(--text-secondary);
+      margin-bottom: 0.8rem;
+    }
+
+    .surprise-sub {
+      font-family: var(--font-ui);
+      font-size: 0.7rem;
+      font-weight: 300;
+      letter-spacing: 0.2em;
+      color: var(--text-muted);
+      margin-bottom: 3rem;
+    }
+
+    .btn-surprise {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 1rem 2.5rem;
+      background: transparent;
+      border: 1px solid var(--surface-2);
+      border-radius: var(--radius-sm);
+      color: var(--text-primary);
+      font-family: var(--font-ui);
+      font-size: 0.7rem;
+      font-weight: 300;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      cursor: pointer;
+      overflow: hidden;
+      transition: all 0.4s var(--transition);
+    }
+
+    .btn-surprise::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg,
+        rgba(0,102,178,0.15),
+        rgba(155,0,98,0.15),
+        rgba(228,0,15,0.15));
+      opacity: 0;
+      transition: opacity 0.4s;
+    }
+
+    .btn-surprise:hover {
+      border-color: var(--m-violet);
+      transform: translateY(-2px);
+      box-shadow:
+        0 8px 32px rgba(155, 0, 98, 0.2),
+        0 0 0 1px var(--m-violet);
+    }
+
+    .btn-surprise:hover::before { opacity: 1; }
+
+    .btn-surprise:active { transform: translateY(0); }
+
+    .btn-surprise-icon {
+      width: 20px;
+      height: 20px;
+      transition: transform 0.4s var(--transition);
+    }
+
+    .btn-surprise:hover .btn-surprise-icon {
+      transform: rotate(15deg) scale(1.2);
+    }
+
+    /* Confetti canvas */
+    #confetti-canvas {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* ─── CLOSING SECTION ───────────────────────────────────────────────── */
+    #closing-section {
+      background: var(--bg-deep);
+      min-height: 60svh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: clamp(4rem, 10vw, 8rem) 2rem;
+    }
+
+    .closing-tagline {
+      font-family: var(--font-heading);
+      font-size: clamp(2rem, 7vw, 5rem);
+      font-weight: 400;
+      font-style: italic;
+      color: var(--text-primary);
+      margin-bottom: 1.5rem;
+      animation: heartbeatGlow 3s ease-in-out infinite;
+    }
+
+    @keyframes heartbeatGlow {
+      0%, 100% {
+        text-shadow: 0 0 20px rgba(228, 0, 15, 0.0),
+                     0 0 60px rgba(155, 0, 98, 0.0);
+      }
+      30% {
+        text-shadow: 0 0 30px rgba(228, 0, 15, 0.4),
+                     0 0 80px rgba(155, 0, 98, 0.25);
+      }
+      35% {
+        text-shadow: 0 0 15px rgba(228, 0, 15, 0.2),
+                     0 0 40px rgba(155, 0, 98, 0.15);
+      }
+      65% {
+        text-shadow: 0 0 35px rgba(228, 0, 15, 0.45),
+                     0 0 90px rgba(155, 0, 98, 0.3);
+      }
+      70% {
+        text-shadow: 0 0 15px rgba(228, 0, 15, 0.2),
+                     0 0 40px rgba(155, 0, 98, 0.15);
+      }
+    }
+
+    .closing-sub {
+      font-family: var(--font-ui);
+      font-size: 0.65rem;
+      font-weight: 200;
+      letter-spacing: 0.5em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 3rem;
+    }
+
+    .heart-pulse {
+      display: inline-block;
+      color: var(--m-red);
+      font-size: 2rem;
+      animation: heartPulse 1.5s ease-in-out infinite;
+    }
+
+    @keyframes heartPulse {
+      0%, 100% { transform: scale(1); }
+      14%       { transform: scale(1.25); }
+      28%       { transform: scale(1); }
+      42%       { transform: scale(1.15); }
+      70%       { transform: scale(1); }
+    }
+
+    .closing-m-stripe {
+      display: flex;
+      gap: 3px;
+      align-items: center;
+      margin-top: 3rem;
+    }
+
+    .closing-m-stripe span {
+      display: block;
+      border-radius: 2px;
+      animation: stripeGrow 2s ease-in-out infinite alternate;
+    }
+
+    .closing-m-stripe span:nth-child(1) {
+      width: 40px; height: 3px; background: var(--m-blue);
+      animation-delay: 0s;
+    }
+    .closing-m-stripe span:nth-child(2) {
+      width: 18px; height: 3px; background: var(--m-violet);
+      animation-delay: 0.2s;
+    }
+    .closing-m-stripe span:nth-child(3) {
+      width: 40px; height: 3px; background: var(--m-red);
+      animation-delay: 0.4s;
+    }
+
+    @keyframes stripeGrow {
+      0%   { opacity: 0.4; transform: scaleX(0.8); }
+      100% { opacity: 1; transform: scaleX(1); }
+    }
+
+    /* ─── Scroll-reveal ─────────────────────────────────────────────────── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.9s var(--transition), transform 0.9s var(--transition);
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.35s; }
+    .reveal-delay-4 { transition-delay: 0.5s; }
+
+    /* ─── Utilities ─────────────────────────────────────────────────────── */
+    @keyframes fadeIn {
+      to { opacity: 1; }
+    }
+    @keyframes fadeSlideDown {
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeSlideUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Bokeh lights */
+    .bokeh-container {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .bokeh {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(40px);
+      opacity: 0;
+      animation: bokehFloat linear infinite;
+    }
+
+    @keyframes bokehFloat {
+      0%   { opacity: 0; transform: translateY(0) scale(0.5); }
+      10%  { opacity: var(--bokeh-opacity); }
+      90%  { opacity: var(--bokeh-opacity); }
+      100% { opacity: 0; transform: translateY(-110vh) scale(1.2); }
+    }
+
+    /* ─── Floating petals that follow mouse ──────────────────────────────── */
+    .petal {
+      position: fixed;
+      pointer-events: none;
+      z-index: 9998;
+      border-radius: 50% 10% 50% 10%;
+      animation: petalFall linear forwards;
+    }
+
+    @keyframes petalFall {
+      0%   { opacity: 0.9; transform: rotate(0deg) scale(1); }
+      100% { opacity: 0; transform: rotate(360deg) scale(0.3) translateY(80px); }
+    }
+
+    /* ─── Mobile tweaks ─────────────────────────────────────────────────── */
+    @media (max-width: 600px) {
+      .letter-card { padding: 1.5rem; }
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- Particle background canvas -->
+<canvas id="particle-canvas"></canvas>
+<!-- Confetti canvas -->
+<canvas id="confetti-canvas"></canvas>
+
+<!-- ════════════════════════════════════════════
+     HERO SECTION
+════════════════════════════════════════════ -->
+<section id="hero">
+  <div class="hero-bg-gradient"></div>
+
+  <!-- Bokeh lights -->
+  <div class="bokeh-container" id="bokeh-container"></div>
+
+  <p class="hero-top-label">A Gift For Her &nbsp;·&nbsp; With All My Heart</p>
+
+  <div class="hero-name-wrapper">
+    <!-- ★ REPLACE "SOPHIA" WITH HER NAME ★ -->
+    <span class="hero-name" id="hero-name">SOPHIA</span>
+  </div>
+
+  <div class="hero-divider">
+    <div class="hero-divider-line"></div>
+    <div class="m-stripe">
+      <span></span><span></span><span></span>
+    </div>
+    <div class="hero-divider-line"></div>
+  </div>
+
+  <div class="hero-birthday">
+    <p class="hero-birthday-main">Happy Birthday</p>
+    <span class="hero-birthday-year">May The Day Be As Beautiful As You</span>
+  </div>
+
+  <div class="hero-scroll-hint">
+    <span>Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<div class="carbon-divider"></div>
+
+<!-- ════════════════════════════════════════════
+     COUNTER SECTION
+════════════════════════════════════════════ -->
+<section id="counter-section" class="section">
+  <div class="counter-inner">
+    <p class="section-label reveal">Time Together</p>
+    <h2 class="counter-heading reveal reveal-delay-1">Every moment counted. Every one, cherished.</h2>
+
+    <div class="counter-grid reveal reveal-delay-2">
+      <div class="counter-unit">
+        <span class="counter-number" id="count-days">—</span>
+        <span class="counter-label">Days</span>
+      </div>
+      <div class="counter-unit">
+        <span class="counter-number" id="count-hours">—</span>
+        <span class="counter-label">Hours</span>
+      </div>
+      <div class="counter-unit">
+        <span class="counter-number" id="count-minutes">—</span>
+        <span class="counter-label">Minutes</span>
+      </div>
+      <div class="counter-unit">
+        <span class="counter-number" id="count-seconds">—</span>
+        <span class="counter-label">Seconds</span>
+      </div>
+    </div>
+
+    <!-- ★ UPDATE THIS DATE to when you started dating (YYYY-MM-DD) ★ -->
+    <p class="counter-note reveal reveal-delay-3" id="counter-note">
+      Update <code>TOGETHER_SINCE</code> in the script to your anniversary date
+    </p>
+  </div>
+</section>
+
+<div class="carbon-divider"></div>
+
+<!-- ════════════════════════════════════════════
+     LETTER SECTION
+════════════════════════════════════════════ -->
+<section id="letter-section" class="section">
+  <div class="letter-outer">
+    <p class="section-label reveal">A Letter For You</p>
+    <h2 class="letter-heading reveal reveal-delay-1">My Dearest,</h2>
+
+    <div class="letter-card reveal reveal-delay-2">
+      <div class="letter-content">
+        <p class="letter-salutation">My love,</p>
+
+        <!-- ════════════════════════════════════════════
+             ★★★  INSERT YOUR LETTER HERE  ★★★
+             Replace everything between the dashes with your personal message.
+             You can use line breaks — they will be preserved.
+        ════════════════════════════════════════════ -->
+        <div class="letter-body">
+          <div class="letter-placeholder">
+            ✦ &nbsp; INSERT LETTER HERE &nbsp; ✦<br><br>
+            Replace the contents of this <code>div</code> with your personal<br>
+            written message. Line breaks will be preserved.<br><br>
+            <em>Example:</em><br>
+            "Every morning I wake up grateful that you exist in my universe…"
+          </div>
+        </div>
+        <!-- ═══════════════════ END LETTER ════════════════════════════════ -->
+
+        <div class="letter-signature">
+          <!-- ★ REPLACE "Your Name" with your name ★ -->
+          <span class="letter-signature-name">Your Name</span>
+          <span class="letter-signature-date" id="letter-date">— With all my love</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="carbon-divider"></div>
+
+<!-- ════════════════════════════════════════════
+     SURPRISE SECTION
+════════════════════════════════════════════ -->
+<section id="surprise-section" class="section">
+  <div class="surprise-inner">
+    <p class="section-label reveal" style="justify-content:center;">A Little Surprise</p>
+    <h2 class="surprise-heading reveal reveal-delay-1">Press When Ready</h2>
+    <p class="surprise-sub reveal reveal-delay-2">Something small. Just for you.</p>
+
+    <button class="btn-surprise reveal reveal-delay-3" id="btn-surprise" onclick="launchConfetti()">
+      <svg class="btn-surprise-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+      </svg>
+      <span>Pop Your Surprise</span>
+    </button>
+  </div>
+</section>
+
+<div class="carbon-divider"></div>
+
+<!-- ════════════════════════════════════════════
+     CLOSING SECTION
+════════════════════════════════════════════ -->
+<section id="closing-section">
+  <p class="section-label reveal" style="justify-content:center;">Always &amp; Forever</p>
+
+  <h2 class="closing-tagline reveal reveal-delay-1">Forever Yours</h2>
+  <p class="closing-sub reveal reveal-delay-2">On your special day and every day after</p>
+
+  <div class="reveal reveal-delay-3">
+    <span class="heart-pulse">♥</span>
+  </div>
+
+  <div class="closing-m-stripe reveal reveal-delay-4">
+    <span></span><span></span><span></span>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════
+     SCRIPTS
+════════════════════════════════════════════ -->
+<script>
+/* ─────────────────────────────────────────────────────
+   ★ CONFIGURATION — Edit these values
+───────────────────────────────────────────────────── */
+const HER_NAME         = 'SOPHIA';       // ← Replace with her name (uppercase for display)
+const YOUR_NAME        = 'Your Name';    // ← Replace with your name (for signature)
+// ★ Replace with the date you started dating (YYYY, MM-1, DD) — month is 0-indexed
+const TOGETHER_SINCE   = new Date(2022, 5, 14); // Example: June 14, 2022
+
+
+/* ─────────────────────────────────────────────────────
+   Apply config to DOM
+───────────────────────────────────────────────────── */
+document.addEventListener('DOMContentLoaded', () => {
+  // Name
+  const nameEl = document.getElementById('hero-name');
+  if (nameEl) nameEl.dataset.text = HER_NAME;
+
+  // Signature
+  const sigName = document.querySelector('.letter-signature-name');
+  if (sigName) sigName.textContent = YOUR_NAME;
+
+  // Date line
+  const now = new Date();
+  const dateEl = document.getElementById('letter-date');
+  if (dateEl) {
+    dateEl.textContent = `— ${now.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}`;
+  }
+
+  // Counter note
+  const noteEl = document.getElementById('counter-note');
+  if (noteEl && TOGETHER_SINCE.getFullYear() !== 2022) {
+    noteEl.style.display = 'none';
+  }
+});
+
+
+/* ─────────────────────────────────────────────────────
+   Hero name — char-by-char animation
+───────────────────────────────────────────────────── */
+(function initHeroName() {
+  const el = document.getElementById('hero-name');
+  if (!el) return;
+  const text = el.textContent;
+  el.textContent = '';
+  [...text].forEach((ch, i) => {
+    const span = document.createElement('span');
+    span.className = 'char';
+    span.textContent = ch === ' ' ? '\u00A0' : ch;
+    span.style.animationDelay = `${0.6 + i * 0.07}s`;
+    el.appendChild(span);
+  });
+})();
+
+
+/* ─────────────────────────────────────────────────────
+   Bokeh floating lights
+───────────────────────────────────────────────────── */
+(function initBokeh() {
+  const container = document.getElementById('bokeh-container');
+  if (!container) return;
+  const colors = [
+    'rgba(0,102,178,VAR)',
+    'rgba(155,0,98,VAR)',
+    'rgba(228,0,15,VAR)',
+    'rgba(200,169,110,VAR)',
+  ];
+  for (let i = 0; i < 18; i++) {
+    const b = document.createElement('div');
+    b.className = 'bokeh';
+    const size = 40 + Math.random() * 120;
+    const opacity = 0.04 + Math.random() * 0.08;
+    const color = colors[Math.floor(Math.random() * colors.length)].replace('VAR', opacity);
+    b.style.cssText = `
+      width: ${size}px;
+      height: ${size}px;
+      left: ${Math.random() * 100}%;
+      top: ${20 + Math.random() * 80}%;
+      background: ${color};
+      --bokeh-opacity: ${opacity};
+      animation-duration: ${8 + Math.random() * 14}s;
+      animation-delay: ${-Math.random() * 12}s;
+    `;
+    container.appendChild(b);
+  }
+})();
+
+
+/* ─────────────────────────────────────────────────────
+   Particle canvas (subtle floating dots)
+───────────────────────────────────────────────────── */
+(function initParticles() {
+  const canvas = document.getElementById('particle-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let W, H, particles;
+
+  const COLORS = ['#E4000F', '#9B0062', '#0066B2', '#C8A96E'];
+
+  function resize() {
+    W = canvas.width  = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+
+  function createParticles() {
+    const count = Math.floor(W * H / 18000);
+    particles = Array.from({ length: count }, () => ({
+      x: Math.random() * W,
+      y: Math.random() * H,
+      r: 0.4 + Math.random() * 1.2,
+      dx: (Math.random() - 0.5) * 0.25,
+      dy: -0.1 - Math.random() * 0.25,
+      color: COLORS[Math.floor(Math.random() * COLORS.length)],
+      alpha: 0.15 + Math.random() * 0.35,
+    }));
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    particles.forEach(p => {
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = p.color;
+      ctx.globalAlpha = p.alpha;
+      ctx.fill();
+
+      p.x += p.dx;
+      p.y += p.dy;
+      if (p.y < -10) { p.y = H + 5; p.x = Math.random() * W; }
+      if (p.x < -10) p.x = W + 5;
+      if (p.x > W + 10) p.x = -5;
+    });
+    ctx.globalAlpha = 1;
+    requestAnimationFrame(draw);
+  }
+
+  resize();
+  createParticles();
+  draw();
+  window.addEventListener('resize', () => { resize(); createParticles(); });
+})();
+
+
+/* ─────────────────────────────────────────────────────
+   Mouse petal trail
+───────────────────────────────────────────────────── */
+(function initPetalTrail() {
+  const PETAL_COLORS = ['#E4000F', '#9B0062', '#0066B2', '#C8A96E', '#F0EDE8'];
+  let lastX = 0, lastY = 0, frameId = null;
+
+  document.addEventListener('mousemove', e => {
+    if (frameId) return;
+    frameId = requestAnimationFrame(() => {
+      frameId = null;
+      const dx = e.clientX - lastX, dy = e.clientY - lastY;
+      if (Math.abs(dx) + Math.abs(dy) < 8) return;
+      lastX = e.clientX; lastY = e.clientY;
+
+      if (Math.random() > 0.55) return; // ~45% chance per frame
+
+      const petal = document.createElement('div');
+      petal.className = 'petal';
+      const size = 5 + Math.random() * 7;
+      petal.style.cssText = `
+        width: ${size}px;
+        height: ${size * 0.6}px;
+        left: ${e.clientX + (Math.random() - 0.5) * 20}px;
+        top: ${e.clientY + (Math.random() - 0.5) * 20}px;
+        background: ${PETAL_COLORS[Math.floor(Math.random() * PETAL_COLORS.length)]};
+        animation-duration: ${0.8 + Math.random() * 0.8}s;
+        transform: rotate(${Math.random() * 360}deg);
+      `;
+      document.body.appendChild(petal);
+      petal.addEventListener('animationend', () => petal.remove());
+    });
+  });
+})();
+
+
+/* ─────────────────────────────────────────────────────
+   Together counter
+───────────────────────────────────────────────────── */
+(function initCounter() {
+  const daysEl    = document.getElementById('count-days');
+  const hoursEl   = document.getElementById('count-hours');
+  const minutesEl = document.getElementById('count-minutes');
+  const secondsEl = document.getElementById('count-seconds');
+
+  function update() {
+    const now  = new Date();
+    const diff = now - TOGETHER_SINCE;
+    if (diff < 0) return;
+
+    const totalSec = Math.floor(diff / 1000);
+    const days    = Math.floor(totalSec / 86400);
+    const hours   = Math.floor((totalSec % 86400) / 3600);
+    const minutes = Math.floor((totalSec % 3600) / 60);
+    const seconds = totalSec % 60;
+
+    if (daysEl)    daysEl.textContent    = days.toLocaleString();
+    if (hoursEl)   hoursEl.textContent   = String(hours).padStart(2,'0');
+    if (minutesEl) minutesEl.textContent = String(minutes).padStart(2,'0');
+    if (secondsEl) secondsEl.textContent = String(seconds).padStart(2,'0');
+  }
+
+  update();
+  setInterval(update, 1000);
+})();
+
+
+/* ─────────────────────────────────────────────────────
+   Scroll reveal
+───────────────────────────────────────────────────── */
+(function initReveal() {
+  const els = document.querySelectorAll('.reveal');
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        obs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  els.forEach(el => obs.observe(el));
+})();
+
+
+/* ─────────────────────────────────────────────────────
+   Confetti / Fireworks burst
+───────────────────────────────────────────────────── */
+const confettiCanvas = document.getElementById('confetti-canvas');
+const confettiCtx   = confettiCanvas && confettiCanvas.getContext('2d');
+let confettiParticles = [];
+let confettiAnimId   = null;
+
+const CONFETTI_COLORS = [
+  '#E4000F', '#9B0062', '#0066B2',
+  '#C8A96E', '#F0EDE8', '#ffffff',
+];
+
+function launchConfetti() {
+  if (!confettiCanvas || !confettiCtx) return;
+
+  confettiCanvas.width  = window.innerWidth;
+  confettiCanvas.height = window.innerHeight;
+
+  const originX = window.innerWidth  / 2;
+  const originY = window.innerHeight / 2;
+
+  // Create 200 particles from center + corners
+  const origins = [
+    { x: originX, y: originY },
+    { x: 0,            y: window.innerHeight },
+    { x: window.innerWidth, y: window.innerHeight },
+  ];
+
+  origins.forEach(o => {
+    for (let i = 0; i < 70; i++) {
+      const angle = (Math.random() * Math.PI * 2);
+      const speed = 4 + Math.random() * 12;
+      confettiParticles.push({
+        x: o.x, y: o.y,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed - (o.y === originY ? 8 : 0),
+        rotation: Math.random() * 360,
+        rotSpeed: (Math.random() - 0.5) * 10,
+        color: CONFETTI_COLORS[Math.floor(Math.random() * CONFETTI_COLORS.length)],
+        w: 6 + Math.random() * 8,
+        h: 4 + Math.random() * 5,
+        alpha: 1,
+        gravity: 0.25 + Math.random() * 0.2,
+        shape: Math.random() > 0.5 ? 'rect' : 'circle',
+      });
+    }
+  });
+
+  if (confettiAnimId) cancelAnimationFrame(confettiAnimId);
+  animateConfetti();
+
+  // Button feedback
+  const btn = document.getElementById('btn-surprise');
+  if (btn) {
+    btn.textContent = '✦  Happy Birthday!  ✦';
+    btn.style.borderColor = 'var(--m-red)';
+    btn.style.color = 'var(--gold-light)';
+    setTimeout(() => {
+      btn.innerHTML = `<svg class="btn-surprise-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg><span>Pop Again</span>`;
+      btn.style.borderColor = '';
+      btn.style.color = '';
+    }, 3000);
+  }
+}
+
+function animateConfetti() {
+  confettiCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+
+  confettiParticles = confettiParticles.filter(p => p.alpha > 0.02);
+
+  confettiParticles.forEach(p => {
+    p.x  += p.vx;
+    p.y  += p.vy;
+    p.vy += p.gravity;
+    p.vx *= 0.99;
+    p.rotation += p.rotSpeed;
+    p.alpha -= 0.008;
+
+    confettiCtx.save();
+    confettiCtx.globalAlpha = Math.max(0, p.alpha);
+    confettiCtx.translate(p.x, p.y);
+    confettiCtx.rotate(p.rotation * Math.PI / 180);
+    confettiCtx.fillStyle = p.color;
+
+    if (p.shape === 'circle') {
+      confettiCtx.beginPath();
+      confettiCtx.arc(0, 0, p.w / 2, 0, Math.PI * 2);
+      confettiCtx.fill();
+    } else {
+      confettiCtx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+    }
+
+    confettiCtx.restore();
+  });
+
+  if (confettiParticles.length > 0) {
+    confettiAnimId = requestAnimationFrame(animateConfetti);
+  } else {
+    confettiCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+  }
+}
+
+window.addEventListener('resize', () => {
+  if (confettiCanvas) {
+    confettiCanvas.width  = window.innerWidth;
+    confettiCanvas.height = window.innerHeight;
+  }
+});
+</script>
+
+</body>
+</html>
